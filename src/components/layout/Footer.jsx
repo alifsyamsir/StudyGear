@@ -5,6 +5,11 @@ import { Shield, Store } from 'lucide-react';
 export default async function Footer() {
   const session = await getSession();
 
+  // Sembunyikan Footer untuk Admin dan Seller agar ruang kerja tabel data tidak terganggu footer belanja
+  if (session && (session.role === 'admin' || session.role === 'seller')) {
+    return null;
+  }
+
   const homeHref = !session
     ? '/'
     : session.role === 'admin'

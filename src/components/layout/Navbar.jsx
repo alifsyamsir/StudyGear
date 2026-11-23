@@ -4,6 +4,12 @@ import NavbarClient from './NavbarClient';
 
 export default async function Navbar() {
   const session = await getSession();
+
+  // Sembunyikan Navbar untuk Admin dan Seller agar workspace bersih dan tidak ada redundansi navigasi
+  if (session && (session.role === 'admin' || session.role === 'seller')) {
+    return null;
+  }
+
   let cartCount = 0;
   let wishlistCount = 0;
 
