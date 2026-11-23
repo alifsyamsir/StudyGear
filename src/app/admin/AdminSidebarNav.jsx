@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Users, Tags, Package, UserCircle } from 'lucide-react';
+import { ShieldCheck, Users, Tags, Package } from 'lucide-react';
 
-export default function AdminSidebarNav() {
+export default function AdminSidebarNav({ onItemClick }) {
   const pathname = usePathname();
 
   const links = [
@@ -32,12 +32,6 @@ export default function AdminSidebarNav() {
       icon: Package,
       description: 'Pantau seluruh produk',
     },
-    {
-      href: '/admin/profile',
-      label: 'Profil Admin',
-      icon: UserCircle,
-      description: 'Kelola akun & kata sandi',
-    },
   ];
 
   return (
@@ -49,6 +43,7 @@ export default function AdminSidebarNav() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={onItemClick}
             className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold transition-all ${
               isActive
                 ? 'bg-[#171F3F] text-white shadow-xs'
