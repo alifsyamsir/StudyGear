@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Package, Store, ClipboardList } from 'lucide-react';
 
-export default function SellerSidebarNav() {
+export default function SellerSidebarNav({ onItemClick }) {
   const pathname = usePathname();
 
   const links = [
@@ -37,6 +37,7 @@ export default function SellerSidebarNav() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={onItemClick}
             className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold transition-all ${
               isActive
                 ? 'bg-[#171F3F] text-white shadow-xs'
