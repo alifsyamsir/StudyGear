@@ -6,7 +6,7 @@ export default async function AdminLayout({ children }) {
   const session = await getSession();
 
   if (!session || session.role !== 'admin') {
-    redirect('/login?callbackUrl=/admin/verifications');
+    redirect('/login?callbackUrl=/admin');
   }
 
   return (

@@ -11,7 +11,7 @@ export default async function HomePage() {
   // If user is Admin or Seller, automatically redirect to their respective management dashboards
   if (session) {
     if (session.role === 'admin') {
-      redirect('/admin/verifications');
+      redirect('/admin');
     }
     if (session.role === 'seller') {
       redirect(session.seller_status === 'approved' ? '/seller/products' : '/seller/pending');

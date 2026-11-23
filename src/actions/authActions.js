@@ -56,7 +56,7 @@ export async function loginUser(formData) {
     // Determine redirect URL
     let redirectUrl = '/';
     if (user.role === 'admin') {
-      redirectUrl = '/admin/verifications';
+      redirectUrl = '/admin';
     } else if (user.role === 'seller') {
       redirectUrl = user.seller_status === 'approved' ? '/seller/products' : '/seller/pending';
     } else if (user.role === 'buyer') {

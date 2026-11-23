@@ -41,7 +41,7 @@ export default function NavbarClient({ session, cartCount = 0, wishlistCount = 0
   const homeHref = !session
     ? '/'
     : session.role === 'admin'
-    ? '/admin/verifications'
+    ? '/admin'
     : session.role === 'seller'
     ? session.seller_status === 'approved' ? '/seller/products' : '/seller/pending'
     : '/';

@@ -2,12 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Users, Tags, Package } from 'lucide-react';
+import { LayoutDashboard, ShieldCheck, Users, Tags, Package } from 'lucide-react';
 
 export default function AdminSidebarNav({ onItemClick }) {
   const pathname = usePathname();
 
   const links = [
+    {
+      href: '/admin',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      description: 'Ringkasan & statistik platform',
+      exact: true,
+    },
     {
       href: '/admin/verifications',
       label: 'Verifikasi Seller',
@@ -37,7 +44,7 @@ export default function AdminSidebarNav({ onItemClick }) {
   return (
     <nav className="space-y-1.5">
       {links.map((item) => {
-        const isActive = pathname.startsWith(item.href);
+        const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
         const IconComponent = item.icon;
         return (
           <Link
