@@ -4,13 +4,17 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteUser } from '@/actions/adminActions';
 import { X, MapPin } from 'lucide-react';
+import Pagination from '@/components/ui/Pagination';
 
 export default function UsersClient({ users = [], currentAdminId }) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isDeleting, setIsDeleting] = useState(null);
   const [alert, setAlert] = useState(null);
+
+  const itemsPerPage = 10;
 
   // Filtered users
   const filteredUsers = users.filter((u) => {
@@ -20,6 +24,24 @@ export default function UsersClient({ users = [], currentAdminId }) {
     const matchesRole = roleFilter === 'all' || u.role === roleFilter;
     return matchesSearch && matchesRole;
   });
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleRoleFilterChange = (role) => {
+    setRoleFilter(role);
+    setCurrentPage(1);
+  };
 
   const handleDelete = async (user) => {
     if (user.id === currentAdminId) {
@@ -89,7 +111,7 @@ export default function UsersClient({ users = [], currentAdminId }) {
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             placeholder="Cari nama atau email pengguna..."
             className="w-full pl-9 pr-4 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776]"
           />
@@ -106,7 +128,7 @@ export default function UsersClient({ users = [], currentAdminId }) {
             <button
               key={r}
               type="button"
-              onClick={() => setRoleFilter(r)}
+              onClick={() => handleRoleFilterChange(r)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-xl capitalize transition-colors cursor-pointer ${
                 roleFilter === r
                   ? 'bg-[#171F3F] text-white shadow-xs'
@@ -135,14 +157,14 @@ export default function UsersClient({ users = [], currentAdminId }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F5F6FA]">
-              {filteredUsers.length === 0 ? (
+              {paginatedUsers.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-8 text-center text-[#6D6E70]">
                     Tidak ada pengguna yang cocok dengan kriteria pencarian.
                   </td>
                 </tr>
               ) : (
-                filteredUsers.map((user) => {
+                paginatedUsers.map((user) => {
                   const isCurrentAdmin = user.id === currentAdminId;
                   return (
                     <tr
@@ -231,6 +253,15 @@ export default function UsersClient({ users = [], currentAdminId }) {
             </tbody>
           </table>
         </div>
+
+        {/* Reusable Pagination Component */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredUsers.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

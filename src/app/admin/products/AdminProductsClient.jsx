@@ -1,16 +1,21 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteProductAdmin } from '@/actions/adminActions';
 import { X, Package, Store } from 'lucide-react';
+import Pagination from '@/components/ui/Pagination';
 
 export default function AdminProductsClient({ products = [] }) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isDeleting, setIsDeleting] = useState(null);
   const [alert, setAlert] = useState(null);
+
+  const itemsPerPage = 10;
 
   // Categories list derived from products
   const categoryNames = Array.from(
@@ -25,6 +30,24 @@ export default function AdminProductsClient({ products = [] }) {
       selectedCategory === 'all' || p.category_name === selectedCategory;
     return matchesSearch && matchesCat;
   });
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    setCurrentPage(1);
+  };
 
   const handleDelete = async (prod) => {
     const reason = window.prompt(
@@ -87,7 +110,7 @@ export default function AdminProductsClient({ products = [] }) {
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             placeholder="Cari nama produk atau nama toko..."
             className="w-full pl-9 pr-4 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776]"
           />
@@ -100,7 +123,7 @@ export default function AdminProductsClient({ products = [] }) {
 
         <select
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={handleCategoryChange}
           className="w-full sm:w-auto px-3.5 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776]"
         >
           <option value="all">Semua Kategori</option>
@@ -128,14 +151,14 @@ export default function AdminProductsClient({ products = [] }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F5F6FA]">
-              {filteredProducts.length === 0 ? (
+              {paginatedProducts.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-8 text-center text-[#6D6E70]">
                     Tidak ada produk yang ditemukan.
                   </td>
                 </tr>
               ) : (
-                filteredProducts.map((p) => (
+                paginatedProducts.map((p) => (
                   <tr key={p.id} className="hover:bg-[#F5F6FA]/50 transition-colors">
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
@@ -206,6 +229,15 @@ export default function AdminProductsClient({ products = [] }) {
             </tbody>
           </table>
         </div>
+
+        {/* Reusable Pagination Component */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredProducts.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
