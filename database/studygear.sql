@@ -7,6 +7,7 @@ CREATE TABLE users (
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'seller', 'buyer')),
     seller_status VARCHAR(20) DEFAULT NULL CHECK (seller_status IN ('pending', 'approved', 'rejected')),
     address TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -66,7 +67,7 @@ CREATE TABLE orders (
 CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
     order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    product_id INT NOT NULL REFERENCES products(id) ON DELETE SET NULL,
+    product_id INT REFERENCES products(id) ON DELETE SET NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     price_at_purchase NUMERIC(12, 2) NOT NULL
 );
