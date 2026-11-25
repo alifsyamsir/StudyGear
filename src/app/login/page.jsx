@@ -4,7 +4,7 @@ import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loginUser } from '@/actions/authActions';
-import { Shield } from 'lucide-react';
+import { Shield, ArrowLeft } from 'lucide-react';
 
 function LoginForm() {
   const router = useRouter();
@@ -66,11 +66,15 @@ function LoginForm() {
     <div className="bg-white rounded-3xl border border-[#CED2E3]/80 p-8 sm:p-10 shadow-sm">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-[#171F3F] to-[#283776] flex items-center justify-center text-white shadow-xs mb-3">
+        <Link
+          href="/"
+          className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-[#171F3F] to-[#283776] flex items-center justify-center text-white shadow-xs mb-3 hover:scale-105 transition-transform cursor-pointer block"
+          title="Kembali ke Beranda StudyGear"
+        >
           <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
-        </div>
+        </Link>
         <h1 className="text-2xl font-bold text-[#171F3F]">Selamat Datang Kembali</h1>
         <p className="text-xs text-[#6D6E70] mt-1">
           Masuk ke akun StudyGear Anda untuk melanjutkan aktivitas
@@ -188,8 +192,20 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F5F6FA] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
+        {/* Back to Home Button */}
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[#6D6E70] hover:text-[#171F3F] transition-colors group cursor-pointer"
+            title="Kembali ke Beranda"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-[#283776]" />
+            <span>Kembali ke Beranda</span>
+          </Link>
+        </div>
+
         <Suspense
           fallback={
             <div className="bg-white rounded-3xl border border-[#CED2E3]/80 p-8 sm:p-10 shadow-sm text-center">

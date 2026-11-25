@@ -165,32 +165,38 @@ export async function updateAdminPassword(formData) {
 }
 
 /**
- * 3. Delete User (Admin)
- * Rule: Admin cannot delete their own account
+ * 4. Toggle User Active Status (Admin)
+ * Rule: Admin cannot deactivate their own account
  */
-export async function deleteUser(targetUserId) {
+export async function toggleUserStatus(targetUserId) {
   try {
     const admin = await requireAdminSession();
 
     if (Number(targetUserId) === Number(admin.id)) {
-      return { error: 'Dilarang keras: Anda tidak dapat menghapus akun admin Anda sendiri!' };
+      return { error: 'Dilarang keras: Anda tidak dapat menonaktifkan akun admin Anda sendiri!' };
     }
 
     const res = await query(
-      'DELETE FROM users WHERE id = $1 AND id <> $2',
+      'UPDATE users SET is_active = NOT is_active WHERE id = $1 AND id <> $2 RETURNING id, name, is_active',
       [targetUserId, admin.id]
     );
 
     if (res.rowCount === 0) {
-      return { error: 'Pengguna tidak ditemukan atau tidak dapat dihapus.' };
+      return { error: 'Pengguna tidak ditemukan atau status tidak dapat diubah.' };
     }
 
+    const updatedUser = res.rows[0];
+    const statusText = updatedUser.is_active ? 'diaktifkan kembali' : 'dinonaktifkan';
+
     revalidatePath('/admin/users');
-    revalidatePath('/admin/verifications');
-    return { success: true, message: 'Pengguna berhasil dihapus secara permanen.' };
+    return {
+      success: true,
+      message: `Akun "${updatedUser.name}" berhasil ${statusText}.`,
+      isActive: updatedUser.is_active,
+    };
   } catch (error) {
-    console.error('deleteUser error:', error);
-    return { error: error.message || 'Gagal menghapus pengguna.' };
+    console.error('toggleUserStatus error:', error);
+    return { error: error.message || 'Gagal mengubah status pengguna.' };
   }
 }
 

@@ -26,7 +26,7 @@ export async function loginUser(formData) {
 
   try {
     const result = await query(
-      'SELECT id, name, email, password, role, seller_status FROM users WHERE LOWER(email) = $1',
+      'SELECT id, name, email, password, role, seller_status, is_active FROM users WHERE LOWER(email) = $1',
       [email]
     );
 
@@ -41,6 +41,12 @@ export async function loginUser(formData) {
       return { error: 'Email atau password yang Anda masukkan salah.' };
     }
 
+    if (user.is_active === false) {
+      return {
+        error: 'Akun Anda telah dinonaktifkan oleh Administrator. Silakan hubungi dukungan pelanggan.',
+      };
+    }
+
     // Generate JWT token
     const tokenPayload = {
       id: user.id,
@@ -48,6 +54,7 @@ export async function loginUser(formData) {
       email: user.email,
       role: user.role,
       seller_status: user.seller_status,
+      is_active: user.is_active,
     };
 
     const token = await signToken(tokenPayload);

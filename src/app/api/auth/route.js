@@ -37,7 +37,7 @@ export async function POST(request) {
     }
 
     const result = await query(
-      'SELECT id, name, email, password, role, seller_status FROM users WHERE LOWER(email) = $1',
+      'SELECT id, name, email, password, role, seller_status, is_active FROM users WHERE LOWER(email) = $1',
       [email.toLowerCase().trim()]
     );
 
@@ -55,6 +55,13 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'Email atau password yang Anda masukkan salah.' },
         { status: 401 }
+      );
+    }
+
+    if (user.is_active === false) {
+      return NextResponse.json(
+        { error: 'Akun Anda telah dinonaktifkan oleh Administrator. Silakan hubungi dukungan pelanggan.' },
+        { status: 403 }
       );
     }
 

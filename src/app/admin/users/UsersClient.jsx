@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteUser } from '@/actions/adminActions';
+import { toggleUserStatus } from '@/actions/adminActions';
 import { X, MapPin } from 'lucide-react';
 import Pagination from '@/components/ui/Pagination';
 
@@ -11,7 +11,7 @@ export default function UsersClient({ users = [], currentAdminId }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [isDeleting, setIsDeleting] = useState(null);
+  const [isToggling, setIsToggling] = useState(null);
   const [alert, setAlert] = useState(null);
 
   const itemsPerPage = 10;
@@ -43,22 +43,23 @@ export default function UsersClient({ users = [], currentAdminId }) {
     setCurrentPage(1);
   };
 
-  const handleDelete = async (user) => {
+  const handleToggleStatus = async (user) => {
     if (user.id === currentAdminId) {
-      setAlert({ type: 'error', message: 'Anda tidak dapat menghapus akun admin Anda sendiri.' });
+      setAlert({ type: 'error', message: 'Anda tidak dapat menonaktifkan akun admin Anda sendiri.' });
       return;
     }
 
+    const actionText = user.is_active !== false ? 'menonaktifkan' : 'mengaktifkan kembali';
     const confirmed = window.confirm(
-      `Apakah Anda yakin ingin menghapus akun "${user.name}" (${user.email}) secara permanen? Seluruh data terkait akun ini akan dihapus.`
+      `Apakah Anda yakin ingin ${actionText} akun "${user.name}" (${user.email})?`
     );
     if (!confirmed) return;
 
-    setIsDeleting(user.id);
+    setIsToggling(user.id);
     setAlert(null);
 
     try {
-      const res = await deleteUser(user.id);
+      const res = await toggleUserStatus(user.id);
       if (res?.error) {
         setAlert({ type: 'error', message: res.error });
       } else {
@@ -66,10 +67,10 @@ export default function UsersClient({ users = [], currentAdminId }) {
         router.refresh();
       }
     } catch (err) {
-      console.error('Delete user error:', err);
-      setAlert({ type: 'error', message: 'Gagal menghapus pengguna.' });
+      console.error('Toggle user status error:', err);
+      setAlert({ type: 'error', message: 'Gagal memperbarui status pengguna.' });
     } finally {
-      setIsDeleting(null);
+      setIsToggling(null);
     }
   };
 
@@ -151,6 +152,7 @@ export default function UsersClient({ users = [], currentAdminId }) {
                 <th className="px-5 py-3.5">Nama</th>
                 <th className="px-5 py-3.5">Email</th>
                 <th className="px-5 py-3.5">Role</th>
+                <th className="px-5 py-3.5">Status Akun</th>
                 <th className="px-5 py-3.5">Status Seller</th>
                 <th className="px-5 py-3.5">Terdaftar</th>
                 <th className="px-5 py-3.5 text-right">Aksi</th>
@@ -159,18 +161,24 @@ export default function UsersClient({ users = [], currentAdminId }) {
             <tbody className="divide-y divide-[#F5F6FA]">
               {paginatedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-8 text-center text-[#6D6E70]">
+                  <td colSpan={8} className="px-5 py-8 text-center text-[#6D6E70]">
                     Tidak ada pengguna yang cocok dengan kriteria pencarian.
                   </td>
                 </tr>
               ) : (
                 paginatedUsers.map((user) => {
                   const isCurrentAdmin = user.id === currentAdminId;
+                  const isActive = user.is_active !== false;
+
                   return (
                     <tr
                       key={user.id}
                       className={`hover:bg-[#F5F6FA]/50 transition-colors ${
-                        isCurrentAdmin ? 'bg-amber-50/40' : ''
+                        isCurrentAdmin
+                          ? 'bg-amber-50/40'
+                          : !isActive
+                          ? 'bg-zinc-50/60 opacity-75'
+                          : ''
                       }`}
                     >
                       <td className="px-5 py-4 font-mono font-medium">#{user.id}</td>
@@ -205,6 +213,18 @@ export default function UsersClient({ users = [], currentAdminId }) {
                         </span>
                       </td>
                       <td className="px-5 py-4">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 ${
+                            isActive
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              : 'bg-red-100 text-red-800 border border-red-200'
+                          }`}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-600' : 'bg-red-600'}`} />
+                          {isActive ? 'Aktif' : 'Nonaktif'}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4">
                         {user.role === 'seller' ? (
                           <span
                             className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
@@ -230,19 +250,30 @@ export default function UsersClient({ users = [], currentAdminId }) {
                       </td>
                       <td className="px-5 py-4 text-right">
                         <div className="flex items-center justify-end">
-                          {/* Delete Button */}
                           <button
                             type="button"
-                            disabled={isCurrentAdmin || isDeleting === user.id}
-                            onClick={() => handleDelete(user)}
-                            title={isCurrentAdmin ? 'Admin tidak dapat menghapus akunnya sendiri' : 'Hapus pengguna'}
-                            className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-colors cursor-pointer ${
+                            disabled={isCurrentAdmin || isToggling === user.id}
+                            onClick={() => handleToggleStatus(user)}
+                            title={
+                              isCurrentAdmin
+                                ? 'Admin tidak dapat menonaktifkan akunnya sendiri'
+                                : isActive
+                                ? 'Nonaktifkan akun pengguna ini'
+                                : 'Aktifkan kembali akun pengguna ini'
+                            }
+                            className={`px-3 py-1 text-[11px] font-semibold rounded-lg transition-colors cursor-pointer ${
                               isCurrentAdmin
                                 ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed border border-zinc-200'
-                                : 'bg-white hover:bg-red-50 text-[#DC2626] border border-red-200'
+                                : isActive
+                                ? 'bg-white hover:bg-amber-50 text-amber-700 border border-amber-300'
+                                : 'bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300'
                             }`}
                           >
-                            {isDeleting === user.id ? 'Menghapus...' : 'Hapus'}
+                            {isToggling === user.id
+                              ? 'Memproses...'
+                              : isActive
+                              ? 'Nonaktifkan'
+                              : 'Aktifkan'}
                           </button>
                         </div>
                       </td>

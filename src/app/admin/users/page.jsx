@@ -8,7 +8,7 @@ export default async function AdminUsersPage() {
   let users = [];
   try {
     const res = await query(
-      `SELECT id, name, email, role, seller_status, address, created_at
+      `SELECT id, name, email, role, seller_status, address, created_at, is_active
        FROM users
        ORDER BY id ASC`
     );

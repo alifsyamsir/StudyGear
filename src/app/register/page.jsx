@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { registerUser } from '@/actions/authActions';
-import { ShoppingBag, Store, Clock, Upload, FileText, X } from 'lucide-react';
+import { ShoppingBag, Store, Clock, Upload, FileText, X, ArrowLeft } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -81,17 +81,33 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F5F6FA] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
+        {/* Back to Home Button */}
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[#6D6E70] hover:text-[#171F3F] transition-colors group cursor-pointer"
+            title="Kembali ke Beranda"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-[#283776]" />
+            <span>Kembali ke Beranda</span>
+          </Link>
+        </div>
+
         {/* Card Container */}
         <div className="bg-white rounded-3xl border border-[#CED2E3]/80 p-8 sm:p-10 shadow-sm">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-[#171F3F] to-[#283776] flex items-center justify-center text-white shadow-xs mb-3">
+            <Link
+              href="/"
+              className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-[#171F3F] to-[#283776] flex items-center justify-center text-white shadow-xs mb-3 hover:scale-105 transition-transform cursor-pointer block"
+              title="Kembali ke Beranda StudyGear"
+            >
               <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
-            </div>
+            </Link>
             <h1 className="text-2xl font-bold text-[#171F3F]">Buat Akun Baru</h1>
             <p className="text-xs text-[#6D6E70] mt-1">
               Bergabunglah dengan StudyGear sebagai Pembeli atau Penjual

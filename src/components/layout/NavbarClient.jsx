@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { logoutUser } from '@/actions/authActions';
 import {
   BookOpen,
@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 
 export default function NavbarClient({ session, cartCount = 0, wishlistCount = 0 }) {
+  const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,6 +38,11 @@ export default function NavbarClient({ session, cartCount = 0, wishlistCount = 0
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Sembunyikan Navbar di halaman Login & Register agar fokus penuh pada autentikasi
+  if (pathname === '/login' || pathname === '/register') {
+    return null;
+  }
 
   const homeHref = !session
     ? '/'
