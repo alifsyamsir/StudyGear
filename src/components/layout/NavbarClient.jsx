@@ -356,22 +356,6 @@ export default function NavbarClient({ session, cartCount = 0, wishlistCount = 0
                             <Package className="w-4 h-4 text-[#283776]" />
                             <span>Riwayat Pesanan</span>
                           </Link>
-                          <Link
-                            href="/buyer/wishlist"
-                            onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-4 py-2 text-sm text-[#2B2B2B] hover:bg-[#F5F6FA] hover:text-[#283776]"
-                          >
-                            <Heart className="w-4 h-4 text-[#DC2626]" />
-                            <span>Wishlist Saya</span>
-                          </Link>
-                          <Link
-                            href="/buyer/cart"
-                            onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-4 py-2 text-sm text-[#2B2B2B] hover:bg-[#F5F6FA] hover:text-[#283776]"
-                          >
-                            <ShoppingCart className="w-4 h-4 text-[#283776]" />
-                            <span>Keranjang</span>
-                          </Link>
                         </>
                       )}
                     </div>

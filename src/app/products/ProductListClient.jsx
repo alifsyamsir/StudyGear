@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/product/ProductCard';
-import { Search } from 'lucide-react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
 
 export default function ProductListClient({
   products = [],
@@ -17,8 +16,6 @@ export default function ProductListClient({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const [searchTerm, setSearchTerm] = useState(currentSearch);
   const wishlistSet = new Set(wishlistIds);
 
   const applyFilter = ({ search, category, sort }) => {
@@ -42,11 +39,6 @@ export default function ProductListClient({
     router.push(`/products?${params.toString()}`);
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    applyFilter({ search: searchTerm });
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Breadcrumbs */}
@@ -57,6 +49,7 @@ export default function ProductListClient({
         <span>/</span>
         <span className="text-[#171F3F] font-semibold">Katalog</span>
       </nav>
+
       {/* Page Title */}
       <div>
         <h1 className="text-3xl font-extrabold text-[#171F3F]">Katalog Perlengkapan Belajar</h1>
@@ -65,39 +58,30 @@ export default function ProductListClient({
         </p>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="bg-white p-5 rounded-3xl border border-[#CED2E3]/80 shadow-xs flex flex-col lg:flex-row gap-4 items-center justify-between">
-        {/* Search Input */}
-        <form onSubmit={handleSearchSubmit} className="relative w-full lg:w-96">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari alat tulis, buku, organizer..."
-            className="w-full pl-10 pr-20 py-2.5 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-full focus:bg-white focus:outline-none focus:border-[#283776] transition-all"
-          />
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6D6E70]">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+      {/* Filter Bar (Cleaned from duplicate search bar) */}
+      <div className="bg-white p-4 sm:p-5 rounded-3xl border border-[#CED2E3]/80 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
+        {/* Left: Filter Indicator */}
+        <div className="flex items-center gap-2.5 text-xs text-[#171F3F] self-start sm:self-auto">
+          <div className="w-8 h-8 rounded-xl bg-[#283776]/10 text-[#283776] flex items-center justify-center">
+            <SlidersHorizontal className="w-4 h-4" />
           </div>
-          <button
-            type="submit"
-            className="absolute inset-y-1 right-1 px-4 text-xs font-semibold text-white bg-[#171F3F] hover:bg-[#283776] rounded-full transition-colors"
-          >
-            Cari
-          </button>
-        </form>
+          <div>
+            <span className="font-bold block">Filter & Urutan</span>
+            <span className="text-[11px] text-[#6D6E70]">
+              Menampilkan {products.length} produk pilihan
+            </span>
+          </div>
+        </div>
 
-        {/* Category & Sorting Controls */}
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+        {/* Right: Category & Sorting Controls */}
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {/* Category Dropdown */}
           <div className="flex items-center gap-2">
             <span className="text-xs text-[#6D6E70] hidden sm:inline">Kategori:</span>
             <select
               value={currentCategory || 'all'}
               onChange={(e) => applyFilter({ category: e.target.value })}
-              className="px-3.5 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776]"
+              className="px-3.5 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776] cursor-pointer"
             >
               <option value="all">Semua Kategori</option>
               {categories.map((c) => (
@@ -114,7 +98,7 @@ export default function ProductListClient({
             <select
               value={currentSort || 'latest'}
               onChange={(e) => applyFilter({ sort: e.target.value })}
-              className="px-3.5 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776]"
+              className="px-3.5 py-2 text-xs bg-[#F5F6FA] border border-[#CED2E3] rounded-xl focus:bg-white focus:outline-none focus:border-[#283776] cursor-pointer"
             >
               <option value="latest">Terbaru</option>
               <option value="price_asc">Harga: Termurah</option>
@@ -137,16 +121,39 @@ export default function ProductListClient({
 
       {/* Active Filter Badges */}
       {(currentSearch || currentCategory) && (
-        <div className="flex items-center gap-2 text-xs text-[#6D6E70]">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-[#6D6E70]">
           <span>Filter aktif:</span>
           {currentSearch && (
-            <span className="px-2.5 py-1 bg-white border border-[#CED2E3] rounded-full text-[#171F3F] font-medium">
-              Pencarian: "{currentSearch}"
+            <span className="px-3 py-1 bg-white border border-[#CED2E3] rounded-full text-[#171F3F] font-medium inline-flex items-center gap-1.5 shadow-2xs">
+              <span>
+                Pencarian: <strong>&ldquo;{currentSearch}&rdquo;</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => applyFilter({ search: '' })}
+                className="text-[#6D6E70] hover:text-[#DC2626] p-0.5 rounded-full hover:bg-red-50 transition-colors cursor-pointer"
+                title="Hapus filter pencarian"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </span>
           )}
           {currentCategory && (
-            <span className="px-2.5 py-1 bg-white border border-[#CED2E3] rounded-full text-[#171F3F] font-medium">
-              Kategori: {categories.find((c) => c.id.toString() === currentCategory)?.name || currentCategory}
+            <span className="px-3 py-1 bg-white border border-[#CED2E3] rounded-full text-[#171F3F] font-medium inline-flex items-center gap-1.5 shadow-2xs">
+              <span>
+                Kategori:{' '}
+                <strong>
+                  {categories.find((c) => c.id.toString() === currentCategory)?.name || currentCategory}
+                </strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => applyFilter({ category: 'all' })}
+                className="text-[#6D6E70] hover:text-[#DC2626] p-0.5 rounded-full hover:bg-red-50 transition-colors cursor-pointer"
+                title="Hapus filter kategori"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </span>
           )}
         </div>
@@ -160,12 +167,12 @@ export default function ProductListClient({
             Tidak Ada Produk yang Ditemukan
           </h2>
           <p className="text-xs text-[#6D6E70] max-w-sm mx-auto mb-5">
-            Coba gunakan kata kunci pencarian yang berbeda atau hapus filter kategori.
+            Coba gunakan kata kunci pencarian yang berbeda di bilah navigasi atas atau hapus filter kategori.
           </p>
           <button
             type="button"
             onClick={() => router.push('/products')}
-            className="px-5 py-2.5 bg-[#171F3F] text-white text-xs font-semibold rounded-full hover:bg-[#283776] transition-colors"
+            className="px-5 py-2.5 bg-[#171F3F] text-white text-xs font-semibold rounded-full hover:bg-[#283776] transition-colors cursor-pointer"
           >
             Tampilkan Semua Produk
           </button>
