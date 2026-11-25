@@ -16,7 +16,7 @@
 3. [Struktur Direktori](#3-struktur-direktori)
 4. [Skema Database (ERD Ringkas)](#4-skema-database-erd-ringkas)
 5. [Panduan Instalasi & Menjalankan Secara Lokal](#5-panduan-instalasi--menjalankan-secara-lokal)
-6. [Akun Seed & Daftar Rute Utama](#6-akun-seed--daftar-rute-utama)
+6. [Akun Demo, Data Seed & Daftar Rute Utama](#6-akun-demo-data-seed--daftar-rute-utama)
 
 ---
 
@@ -206,17 +206,24 @@ Skema database didefinisikan pada [`database/studygear.sql`](./database/studygea
 
 ---
 
-## 6. Akun Seed & Daftar Rute Utama
+## 6. Akun Demo, Data Seed & Daftar Rute Utama
+
+### Akun Demo
+
+Gunakan kredensial berikut untuk mencoba fitur berdasarkan peran pada halaman `/login`:
+
+| Role | Email | Password | Keterangan |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@studygear.id` | `admin123` | Akun administrator bawaan dari seed database |
+| **Seller** | `jaya3@gmail.com` | `jaya3123` | Akun penjual demo (untuk lokal baru, daftarkan via `/register` lalu setujui melalui panel Admin jika belum ada di database) |
+
+> **Catatan:** Akun **Buyer** baru juga dapat dibuat langsung melalui halaman **`/register`**.
 
 ### Data Seed Awal (`database/studygear.sql`)
 
 Skrip [`database/studygear.sql`](./database/studygear.sql) secara otomatis mengisi:
 * **5 Kategori Awal**: *Alat Tulis & Pena*, *Buku Catatan & Kertas*, *Perlengkapan Meja Belajar*, *Binder & Organizer*, dan *Alat Gambar & Highlighters*.
-* **1 Akun Administrator Seed**:
-  * **Nama**: `Administrator Studygear`
-  * **Email**: `admin@studygear.id`
-  * **Role**: `admin`
-  * **Catatan Password**: Password *plain-text* tidak ditulis langsung di dalam `database/studygear.sql` (kolom `password` menyimpan hash `bcryptjs`). Apabila Anda perlu mengatur ulang password Admin lokal, buat hash baru menggunakan `bcryptjs` lalu perbarui baris `admin@studygear.id` di tabel `users`. Sementara itu, akun **Buyer** dan **Seller** dapat langsung dibuat melalui halaman **`/register`**.
+* **1 Akun Administrator Seed**: `Administrator Studygear` (`admin@studygear.id`, role `admin`).
 
 ### Daftar Rute Aplikasi
 
