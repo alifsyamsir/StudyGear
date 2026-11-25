@@ -357,7 +357,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Tags className="w-4 h-4 text-[#283776]" />
-                <h2 className="text-base font-bold text-[#171F3F]">Kategori Populer</h2>
+                <h2 className="text-base font-bold text-[#171F3F]">Kategori Utama</h2>
               </div>
               <Link
                 href="/admin/categories"

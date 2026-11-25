@@ -119,7 +119,7 @@ export default function PendingClient({ user }) {
               </h1>
 
               <p className="text-xs text-[#6D6E70] leading-relaxed mb-6">
-                Halo <span className="font-semibold text-[#2B2B2B]">{user.name}</span>, permohonan pendaftaran toko Anda tidak memenuhi kriteria verifikasi StudyGear. Anda dapat menghapus akun ini jika ingin mendaftar ulang di kemudian hari.
+                Halo <span className="font-semibold text-[#2B2B2B]">{user.name}</span>, permohonan pendaftaran toko Anda tidak memenuhi kriteria verifikasi StudyGear. Hubungi layanan pelanggan untuk informasi lebih lanjut.
               </p>
 
               {errorMessage && (

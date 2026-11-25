@@ -37,7 +37,7 @@ export default function FooterClient({ session, homeHref }) {
           {/* Column: Hubungi Kami */}
           <div>
             <h3 className="text-sm font-bold text-[#171F3F] uppercase tracking-wider mb-4">
-              Hubungi Kami
+              Layanan Pelanggan
             </h3>
             <ul className="space-y-3 text-sm text-[#6D6E70]">
               <li className="flex items-start gap-2.5">
@@ -97,7 +97,7 @@ export default function FooterClient({ session, homeHref }) {
           </div>
 
           {/* Column: Navigasi Khusus Role */}
-          <div>
+          {/* <div>
             <ul className="space-y-2.5 text-sm text-[#6D6E70]">
               {session?.role === 'admin' ? (
                 <li>
@@ -118,7 +118,7 @@ export default function FooterClient({ session, homeHref }) {
                 </li>
               ) : null}
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* Bottom Bar */}

@@ -220,7 +220,7 @@ export default function AdminProductsClient({ products = [] }) {
                         onClick={() => handleDelete(p)}
                         className="px-3 py-1.5 bg-red-50 hover:bg-[#DC2626] text-[#DC2626] hover:text-white border border-red-200 text-xs font-semibold rounded-lg transition-colors cursor-pointer disabled:opacity-50"
                       >
-                        {isDeleting === p.id ? 'Menghapus...' : 'Hapus Pelanggaran'}
+                        {isDeleting === p.id ? 'Menghapus...' : 'Hapus Produk'}
                       </button>
                     </td>
                   </tr>
